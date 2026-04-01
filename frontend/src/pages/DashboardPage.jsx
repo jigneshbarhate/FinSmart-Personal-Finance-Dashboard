@@ -1,44 +1,56 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/Card';
-import { mockSummary, mockTransactions } from '../utils/mockData';
 import TransactionItem from '../components/TransactionItem';
-import { Wallet, TrendingUp, TrendingDown, ArrowRight, BarChart3 } from 'lucide-react';
+import FinancialCharts from '../components/Charts';
+import BudgetWidget from '../components/BudgetWidget';
+import { DataContext } from '../context/DataContext';
+import { Wallet, TrendingUp, TrendingDown, ArrowRight, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function DashboardPage() {
-  const recentTransactions = mockTransactions.slice(0, 4);
+  const { transactions, budgetSummary, loading } = useContext(DataContext);
+
+  if (loading || !budgetSummary) {
+    return (
+      <div className="flex h-[80vh] items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+        <span className="ml-3 text-lg font-medium text-navy tracking-tight">Loading Dashboard...</span>
+      </div>
+    );
+  }
+
+  const recentTransactions = transactions.slice(0, 4);
+  const { totalIncome = 0, totalExpense = 0, savings = 0 } = budgetSummary;
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-navy">Dashboard</h1>
-          <p className="text-gray-500 text-sm">Welcome back, John! Here's your financial overview.</p>
+          <p className="text-gray-500 text-sm">Welcome back! Here's your financial overview for the current month.</p>
         </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="bg-navy text-white hover:shadow-lg transition-shadow border-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-300">Total Balance</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-300">Net Savings</CardTitle>
             <Wallet size={16} className="text-gray-300" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">${mockSummary.totalBalance.toFixed(2)}</div>
-            <p className="text-xs text-primary mt-1 flex items-center font-medium">
-              <TrendingUp size={12} className="mr-1 stroke-[3]" /> +2.5% from last month
-            </p>
+            <div className="text-3xl font-bold">
+              ${savings >= 0 ? savings.toFixed(2) : `(${Math.abs(savings).toFixed(2)})`}
+            </div>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Monthly Income</CardTitle>
-            <TrendingUp size={16} className="text-primary" />
+            <TrendingUp size={16} className="text-emerald-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-navy">${mockSummary.monthlyIncome.toFixed(2)}</div>
-            <p className="text-xs text-gray-500 mt-1">Expected $5,500.00</p>
+            <div className="text-2xl font-bold text-navy">${totalIncome.toFixed(2)}</div>
           </CardContent>
         </Card>
 
@@ -48,40 +60,40 @@ export default function DashboardPage() {
             <TrendingDown size={16} className="text-red-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-navy">${mockSummary.monthlyExpenses.toFixed(2)}</div>
-            <p className="text-xs text-gray-500 mt-1">Safe zone limits</p>
+            <div className="text-2xl font-bold text-navy">${totalExpense.toFixed(2)}</div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-7">
-        <Card className="md:col-span-4 flex flex-col hover:shadow-md transition-shadow">
-          <CardHeader>
-            <CardTitle>Cash Flow</CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 min-h-[300px] flex items-center justify-center border border-dashed border-gray-200 rounded-xl m-6 mt-0 bg-gray-50/50">
-            <div className="text-center">
-              <BarChart3 size={48} className="mx-auto text-gray-300 mb-3 stroke-[1.5]" />
-              <p className="text-gray-500 font-medium">Chart visualization placeholder</p>
-              <p className="text-xs text-gray-400">Add Recharts or Chart.js here</p>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Render Dynamic Budget Tracking Widget */}
+      <BudgetWidget />
 
-        <Card className="md:col-span-3 hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Recent Transactions</CardTitle>
-            <Link to="/transactions" className="text-sm text-primary font-medium flex items-center hover:underline group">
-              View all <ArrowRight size={14} className="ml-1 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-          </CardHeader>
-          <CardContent className="p-0">
-             {recentTransactions.map((tx) => (
-                <TransactionItem key={tx.id} transaction={tx} />
-             ))}
-          </CardContent>
-        </Card>
+      {/* Render Dynamic Financial Charts */}
+      <div>
+         <h2 className="text-xl font-bold tracking-tight text-navy mb-4">Financial Insights</h2>
+         <FinancialCharts transactions={transactions} />
       </div>
+
+      {/* Render Recent Transactions Feed */}
+      <Card className="md:col-span-3 hover:shadow-md transition-shadow overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between bg-white border-b border-gray-100">
+          <CardTitle>Recent Transactions</CardTitle>
+          <Link to="/transactions" className="text-sm text-primary font-medium flex items-center hover:underline group">
+            View all <ArrowRight size={14} className="ml-1 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </CardHeader>
+        <CardContent className="p-0 bg-white">
+            {recentTransactions.length > 0 ? (
+              recentTransactions.map((tx) => (
+              <TransactionItem key={tx._id || tx.id} transaction={tx} />
+              ))
+            ) : (
+              <div className="p-8 text-center text-gray-500 text-sm border-t border-gray-50">
+                No recent transactions found. Go to 'Transactions' to map your activities.
+              </div>
+            )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

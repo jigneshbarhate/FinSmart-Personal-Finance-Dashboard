@@ -29,13 +29,25 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
+  const updateProfile = async (name, email) => {
+    const { data } = await api.put('/auth/profile', { name, email });
+    localStorage.setItem('userInfo', JSON.stringify(data));
+    setUser(data);
+    return data;
+  };
+
+  const updatePassword = async (currentPassword, newPassword) => {
+    const { data } = await api.put('/auth/password', { currentPassword, newPassword });
+    return data;
+  };
+
   const logout = () => {
     localStorage.removeItem('userInfo');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, updateProfile, updatePassword, logout, loading }}>
         {children}
     </AuthContext.Provider>
   );

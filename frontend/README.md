@@ -1,16 +1,62 @@
-# React + Vite
+# 🎨 FinSmart Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The frontend of FinSmart is a modern, responsive React-based dashboard built for a seamless personal finance management experience.
 
-Currently, two official plugins are available:
+## ✨ Key Features
+- **Intuitive Dashboard**: Overview of current balance, spending, and income.
+- **Transaction History**: Searchable and filterable transaction table.
+- **Interactive Charts**: Visual breakdown of financial data using Recharts.
+- **Responsive Layout**: Designed for mobile-first access with a collapsible sidebar.
+- **Global Data Hub**: Centralized state management using React Context.
+- **AI Chatbot UI**: Integrated chat bubble to interact with the financial coach.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🛠️ Tech Stack
+- **React.js (Vite)**
+- **Tailwind CSS**
+- **Lucide Icons**
+- **Recharts**
+- **Axios**
+- **React Router**
+- **React Toastify**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🏗️ Folder Structure
+```
+frontend/src/
+├── api/          # Axios instance and API calls
+├── components/   # Reusable UI components
+├── context/      # Global state management
+├── pages/        # Main application views
+├── routes/       # Route definitions
+├── utils/        # Generic helpers
+└── App.jsx       # Root component
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## ⚙️ Development
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Set up environment variables in `.env`:
+   ```env
+   VITE_API_BASE_URL=http://localhost:5000/api
+   ```
+
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Build for production:
+   ```bash
+   npm run build
+   ```
+
+The application runs on `http://localhost:5173` by default.

@@ -24,10 +24,10 @@ export default function LandingPage() {
         </div>
         
         <div className="flex items-center space-x-4">
-          <Link to="/dashboard" className="hidden sm:block text-navy font-medium hover:text-primary transition">
+          <Link to="/login" className="hidden sm:block text-navy font-medium hover:text-primary transition">
             Login
           </Link>
-          <Link to="/dashboard">
+          <Link to="/register">
             <Button className="rounded-full px-6 shadow-md shadow-primary/20">
               Get Started
             </Button>
@@ -58,22 +58,22 @@ export default function LandingPage() {
         </p>
         
         <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
-          <Link to="/dashboard">
+          <Link to="/register">
             <Button size="lg" className="rounded-full px-8 shadow-xl shadow-primary/20 group text-base">
               Start for free
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
             </Button>
           </Link>
-          <Link to="/dashboard">
+          <a href="#features">
             <Button variant="outline" size="lg" className="rounded-full px-8 text-base">
               See how it works
             </Button>
-          </Link>
+          </a>
         </div>
       </main>
 
       {/* Features Section */}
-      <section className="bg-gray-50 py-24">
+      <section id="features" className="bg-gray-50 py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-navy mb-4 text-center">Everything you need to succeed</h2>

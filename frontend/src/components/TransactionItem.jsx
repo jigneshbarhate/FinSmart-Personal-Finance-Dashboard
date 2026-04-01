@@ -3,7 +3,7 @@ import { cn } from './Button';
 import { ArrowUpRight, ArrowDownLeft, Receipt } from 'lucide-react';
 
 export function TransactionItem({ transaction, className }) {
-  const isCredit = transaction.type === 'Credit';
+  const isCredit = transaction.type === 'income';
   
   return (
     <div className={cn("flex items-center justify-between p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors", className)}>

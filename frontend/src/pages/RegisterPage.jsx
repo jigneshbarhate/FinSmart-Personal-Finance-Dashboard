@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Wallet, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { toast } from 'react-toastify';
 
 const RegisterPage = () => {
   const [name, setName] = useState('');
@@ -52,6 +52,7 @@ const RegisterPage = () => {
                 <input type="text" required value={name} onChange={(e) => setName(e.target.value)}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
                   placeholder="John Doe"
+                  autoComplete="name"
                 />
               </div>
             </div>
@@ -62,6 +63,7 @@ const RegisterPage = () => {
                 <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
                   placeholder="john@example.com"
+                  autoComplete="email"
                 />
               </div>
             </div>
@@ -72,6 +74,7 @@ const RegisterPage = () => {
                 <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
                   placeholder="••••••••"
+                  autoComplete="new-password"
                 />
               </div>
             </div>
