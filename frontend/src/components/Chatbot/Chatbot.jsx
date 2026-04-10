@@ -30,7 +30,7 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      const { data } = await api.post('/ai/chat', { query: userQuery });
+      const { data } = await api.post('/chat', { query: userQuery });
       setMessages(prev => [...prev, { role: 'ai', content: data.message }]);
     } catch (error) {
       setMessages(prev => [

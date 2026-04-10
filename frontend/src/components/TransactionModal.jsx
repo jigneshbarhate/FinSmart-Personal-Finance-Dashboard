@@ -18,6 +18,7 @@ export const TransactionModal = ({ isOpen, onClose, onSubmit, initialData }) => 
   // Re-populate data when opening modal with initialData (editing mode)
   useEffect(() => {
     if (initialData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         amount: initialData.amount,
         type: initialData.type,

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import api from '../api/axios';
 import { AuthContext } from './AuthContext';
 import { toast } from 'react-toastify';
@@ -16,7 +16,7 @@ export const DataProvider = ({ children }) => {
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   // Helper to fetch data
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!user) {
       setTransactions([]);
       setBudgetSummary(null);
@@ -45,11 +45,11 @@ export const DataProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchData();
-  }, [user]);
+  }, [fetchData]);
 
   // Actions
   const addTransaction = async (txData) => {

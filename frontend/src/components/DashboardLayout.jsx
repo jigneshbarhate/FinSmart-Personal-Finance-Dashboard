@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Sidebar } from '../components/Sidebar';
+import Chatbot from '../components/Chatbot/Chatbot';
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -18,6 +19,7 @@ export function DashboardLayout() {
           </div>
         </main>
       </div>
+      <Chatbot />
     </div>
   );
 }

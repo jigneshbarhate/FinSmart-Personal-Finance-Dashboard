@@ -24,7 +24,7 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/budget', budgetRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/ai', aiRoutes);
+app.use('/api/chat', aiRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is running...');
