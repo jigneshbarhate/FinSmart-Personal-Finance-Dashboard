@@ -4,7 +4,7 @@ import Transaction from '../models/Transaction.js';
 // @route   GET /api/dashboard/summary
 const getSummary = async (req, res) => {
   try {
-    const transactions = await Transaction.find({ user: req.user._id }).sort({ date: -1 });
+    const transactions = await Transaction.find({ userId: req.user._id }).sort({ date: -1 });
 
     const totalIncome = transactions
       .filter((t) => t.type === 'income')

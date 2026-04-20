@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Sidebar } from '../components/Sidebar';
 import Chatbot from '../components/Chatbot/Chatbot';
+import { AuthContext } from '../context/AuthContext';
 
 export function DashboardLayout() {
+  const { user } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Redirect to login if not authenticated
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
   
   return (
     <div className="flex h-screen bg-[#f8fafc] overflow-hidden">

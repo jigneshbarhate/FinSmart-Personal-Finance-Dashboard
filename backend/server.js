@@ -34,6 +34,8 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'FinSmart API is running' });
 });
 
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 app.use(notFound);
 app.use(errorHandler);
 

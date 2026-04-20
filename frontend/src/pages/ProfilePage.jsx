@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/Card';
 import { Button } from '../components/Button';
 import { User, Mail, Calendar, Settings, Shield, LogOut, Trash2 } from 'lucide-react';
@@ -10,10 +10,15 @@ import { SettingsModal } from '../components/SettingsModal';
 import { SecurityModal } from '../components/SecurityModal';
 
 export default function ProfilePage() {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, refreshUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSecurityOpen, setIsSecurityOpen] = useState(false);
+
+  // Refresh profile from backend on mount
+  useEffect(() => {
+    refreshUser();
+  }, [refreshUser]);
 
   const handleLogout = () => {
     logout();

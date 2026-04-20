@@ -1,4 +1,18 @@
 import Transaction from '../models/Transaction.js';
+import ChatMessage from '../models/ChatMessage.js';
+
+// @desc    Get chat history
+// @route   GET /api/chat/history
+// @access  Private
+const getChatHistory = async (req, res) => {
+  try {
+    const history = await ChatMessage.find({ userId: req.user._id }).sort({ createdAt: 1 });
+    res.json(history);
+  } catch (error) {
+    console.error('Error fetching chat history:', error);
+    res.status(500).json({ message: 'Failed to load chat history' });
+  }
+};
 
 // @desc    Get AI insights
 // @route   POST /api/chat
@@ -14,6 +28,13 @@ const getAiInsights = async (req, res) => {
   }
 
   try {
+    // Save user message to history
+    await ChatMessage.create({
+      userId: req.user._id,
+      role: 'user',
+      content: query
+    });
+
     const transactions = await Transaction.find({ userId: req.user._id });
 
     let totalIncome = 0;
@@ -72,40 +93,54 @@ ${query}
 
 Provide a clear, helpful, and actionable response.`;
 
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
-    
-    const response = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{ text: promptText }]
-        }]
-      })
-    });
+    // Try primary model, fall back to lite on overload
+    const tryGemini = async (model) => {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+      return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+      });
+    };
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Gemini API Error Response:', errorData);
-      return res.status(500).json({ message: 'I’m having trouble fetching your data. Please try again.' });
+    let geminiResponse = await tryGemini('gemini-2.5-flash');
+
+    // If primary model is overloaded, retry with lite variant
+    if (geminiResponse.status === 503) {
+      console.warn('gemini-2.5-flash overloaded, falling back to gemini-2.5-flash-lite...');
+      geminiResponse = await tryGemini('gemini-2.5-flash-lite');
     }
 
-    const data = await response.json();
+    if (!geminiResponse.ok) {
+      const errorData = await geminiResponse.json();
+      console.error('Gemini API Error Response:', errorData);
+      const userMessage = geminiResponse.status === 503
+        ? "The AI is currently busy. Please try again in a moment."
+        : "I'm having trouble fetching your data. Please try again.";
+      return res.status(500).json({ message: userMessage });
+    }
+
+    const responseData = await geminiResponse.json();
     
-    let answer = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    let answer = responseData.candidates?.[0]?.content?.parts?.[0]?.text;
     
     if (!answer) {
-       answer = "I'm having trouble analyzing your financial data right now. Please try again.";
+      answer = "I'm having trouble analyzing your financial data right now. Please try again.";
     }
+
+    // Save AI response to history
+    await ChatMessage.create({
+      userId: req.user._id,
+      role: 'ai',
+      content: answer
+    });
 
     res.json({ message: answer });
 
   } catch (error) {
     console.error('AI Proxy Route Error:', error);
-    res.status(500).json({ message: 'I’m having trouble fetching your data. Please try again.' });
+    res.status(500).json({ message: "I'm having trouble fetching your data. Please try again." });
   }
 };
 
-export { getAiInsights };
+export { getAiInsights, getChatHistory };

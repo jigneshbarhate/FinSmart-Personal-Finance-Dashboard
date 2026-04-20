@@ -17,8 +17,25 @@ const Chatbot = () => {
   };
 
   useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const { data } = await api.get('/chat/history');
+        if (data && data.length > 0) {
+          setMessages(data);
+        }
+      } catch (error) {
+        console.error('Failed to load chat history:', error);
+      }
+    };
+    
+    if (isOpen) {
+      fetchHistory();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     scrollToBottom();
-  }, [messages, isOpen]);
+  }, [messages]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

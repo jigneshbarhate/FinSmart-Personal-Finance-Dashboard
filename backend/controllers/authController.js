@@ -3,6 +3,28 @@ import Transaction from '../models/Transaction.js';
 import Budget from '../models/Budget.js';
 import generateToken from '../utils/generateToken.js';
 
+// @desc    Get current user profile
+// @route   GET /api/auth/profile
+// @access  Private
+export const getUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
+    if (user) {
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt,
+      });
+    } else {
+      res.status(404);
+      return next(new Error('User not found'));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
@@ -138,6 +160,7 @@ export const updateUserProfile = async (req, res, next) => {
       return next(new Error('User not found'));
     }
   } catch (error) {
+    console.error('updateUserProfile error:', error.name, error.message, error.code);
     next(error);
   }
 };
