@@ -1,0 +1,28 @@
+name: Deploy FinSmart Backend
+on:
+  push:
+    branches: [main]
+  # Allows manual triggering from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./backend
+
+      - name: Deploy to Render
+        # This sends a POST request to Render's Deploy Hook URL
+        # You MUST add RENDER_DEPLOY_HOOK to your GitHub Repository Secrets
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
